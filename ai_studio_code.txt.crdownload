@@ -1,0 +1,35 @@
+# Documentação Técnica: Dashboard ONI Intelligence - Backup & Restore NOC
+
+Este documento descreve a lógica de negócio, as validações matemáticas e a arquitetura técnica do dashboard de monitoramento da ONI Intelligence.
+
+## 1. Visão Geral e Pergunta do Negócio
+
+O propósito central deste Dashboard é fornecer uma resposta imediata e visual para a pergunta estratégica:
+> **"Os dados estratégicos da empresa estão 100% protegidos, recuperáveis e operando dentro do SLA agora?"**
+
+Para responder a essa pergunta, o painel foca em 5 pilares operacionais fundamentais:
+1.  **SLA de Execução:** Estamos atingindo a meta de 95% de sucesso nos 86.942 jobs diários?
+2.  **Recuperabilidade (SureBackup):** Os dados salvos são testados e estão prontos para restauração em sandbox?
+3.  **Top Falhas:** Quais servidores críticos estão com erro agora e precisam de intervenção imediata do N2?
+4.  **Capacidade do Repositório:** Em quantos dias o storage de 1.42 PB atingirá o esgotamento (Capacity Planning)?
+5.  **Telemetria de Rede:** A estabilidade do link (latência) ou consumo da WAN1 está impactando a performance dos backups?
+
+---
+
+## 2. Testes de Validação Pré-Desenvolvimento (AI Studio)
+
+Antes da implementação da UI, foram realizados testes lógicos via Python para validar os algoritmos de monitoramento.
+
+### Teste 1: Validação de Taxa de SLA
+Simulação matemática para garantir que o cálculo de sucesso vs. falhas críticas no Dashboard reflete a realidade operacional.
+```python
+total_jobs = 86942
+meta_sla = 0.95
+jobs_concluidos = 78508 # Valor simulado (90.3%)
+
+def validar_sla(concluidos, total):
+    taxa = concluidos / total
+    status = "OK" if taxa >= meta_sla else "ALERTA CRÍTICO"
+    return f"Taxa: {taxa:.2%}, Status: {status}"
+
+# Resultado Esperado: Taxa: 90.30%, Status: ALERTA CRÍTICO

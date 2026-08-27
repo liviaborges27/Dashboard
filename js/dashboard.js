@@ -4,7 +4,34 @@
  */
 
 // ==========================================================================
-// 1. PLUGINS CUSTOMIZADOS PARA CHART.JS
+// 1. ESTRUTURA DE DADOS (DADOS SIMULADOS / API)
+// ==========================================================================
+
+const dadosDashboard = {
+  slaSemanal: [
+    { dia: "Seg", valor: 99.4 },
+    { dia: "Ter", valor: 98.7 },
+    { dia: "Qua", valor: 99.1 },
+    { dia: "Qui", valor: 97.8 },
+    { dia: "Sex", valor: 99.5 },
+    { dia: "Sáb", valor: 99.9 },
+    { dia: "Dom", valor: 98.2 }
+  ],
+  telemetriaRede: {
+    labels: ["09:35", "10:05", "10:35", "11:05", "11:35", "12:05", "12:35", "13:05", "13:35", "14:05", "14:35", "15:05", "15:35"],
+    latenciaICMP: [7.8, 8.5, 8.0, 6.1, 16.4, 8.0, 9.2, 8.0, 6.2, 7.8, 8.5, 6.0, 8.1], // ms
+    downloadMbps: [30, 38, 32, 38, 22, 18, 24, 32, 95.7, 38, 26, 28, 33.4],          // Mbps
+    uploadMbps: [8, 9, 8, 10, 8, 6, 8, 7, 22.4, 5, 7, 8, 8.7]                     // Mbps
+  },
+  topFalhas: [
+    { servidor: "SRV-VMS-PROD-02", erro: "VSS Snapshot Failure", impacto: "Crítico", horario: "15:42" },
+    { servidor: "SRV-BKP-CORE-01", erro: "Repository Disk Full", impacto: "Crítico", horario: "16:10" },
+    { servidor: "SRV-SQL-FIN-03", erro: "Network Timeout (Proxy)", impacto: "Alto", horario: "16:55" }
+  ]
+};
+
+// ==========================================================================
+// 2. PLUGINS CUSTOMIZADOS PARA CHART.JS
 // ==========================================================================
 
 /**
@@ -71,7 +98,7 @@ const peakHighlightPlugin = {
 };
 
 // ==========================================================================
-// 2. INICIALIZAÇÃO DOS GRÁFICOS
+// 3. INICIALIZAÇÃO DOS GRÁFICOS E INTERFACE
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -81,15 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
     new Chart(ctxIcmp, {
         type: 'line',
         data: {
-            labels: ['09:35', '10:05', '10:35', '11:05', '11:35', '12:05', '12:35', '13:05', '13:35', '14:05', '14:35', '15:05', '15:35'],
+            labels: dadosDashboard.telemetriaRede.labels, // Conectado aos dados da variável
             datasets: [{
-                data: [7.8, 8.5, 8.0, 6.1, 16.4, 8.0, 9.2, 8.0, 6.2, 7.8, 8.5, 6.0, 8.1],
+                data: dadosDashboard.telemetriaRede.latenciaICMP, // Conectado aos dados da variável
                 borderColor: '#00ff66',
                 borderWidth: 2,
                 fill: false,
                 tension: 0.35,
-                // Lógica para destacar pontos específicos (pico e último valor)
-                pointRadius: (ctx) => (ctx.dataIndex === 4 || ctx.dataIndex === 12 ? 4 : 0),
+                // Destaca os pontos de pico e o valor atual dinamicamente
+                pointRadius: (ctx) => (ctx.dataIndex === 4 || ctx.dataIndex === dadosDashboard.telemetriaRede.latenciaICMP.length - 1 ? 4 : 0),
                 pointBackgroundColor: (ctx) => (ctx.dataIndex === 4 ? '#ffb300' : '#00ff66'),
                 pointBorderColor: (ctx) => (ctx.dataIndex === 4 ? '#ffb300' : '#00ff66'),
                 pointBorderWidth: 2
@@ -101,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
-                thresholdValue: 15 // Valor onde a linha de alerta aparece
+                thresholdValue: 15 // Linha de alerta em 15 ms
             },
             scales: {
                 x: {
@@ -121,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Gráfico 2: TRÁFEGO WAN ---
     const ctxWan = document.getElementById('wanChart').getContext('2d');
     
-    // Criação do Gradiente para o preenchimento do gráfico de Download
+    // Gradiente de fundo para Download
     const wanGradient = ctxWan.createLinearGradient(0, 0, 0, 120);
     wanGradient.addColorStop(0, 'rgba(0, 255, 102, 0.25)');
     wanGradient.addColorStop(1, 'rgba(0, 255, 102, 0.00)');
@@ -129,11 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
     new Chart(ctxWan, {
         type: 'line',
         data: {
-            labels: ['09:35', '10:05', '10:35', '11:05', '11:35', '12:05', '12:35', '13:05', '13:35', '14:05', '14:35', '15:05', '15:35'],
+            labels: dadosDashboard.telemetriaRede.labels, // Conectado aos dados da variável
             datasets: [
                 {
                     label: 'Download',
-                    data: [30, 38, 32, 38, 22, 18, 24, 32, 95.7, 38, 26, 28, 33.4],
+                    data: dadosDashboard.telemetriaRede.downloadMbps, // Conectado aos dados da variável
                     borderColor: '#00ff66',
                     borderWidth: 2,
                     fill: true,
@@ -144,10 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 {
                     label: 'Upload',
-                    data: [8, 9, 8, 10, 8, 6, 8, 7, 22.4, 5, 7, 8, 8.7],
+                    data: dadosDashboard.telemetriaRede.uploadMbps, // Conectado aos dados da variável
                     borderColor: '#637599',
                     borderWidth: 1.5,
-                    borderDash: [4, 4], // Linha tracejada para Upload
+                    borderDash: [4, 4],
                     fill: false,
                     tension: 0.35,
                     pointRadius: (ctx) => (ctx.dataIndex === 8 ? 3 : 0),
@@ -161,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
             maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
-                peakHighlightRange: { start: 7, end: 9 } // Destaca o intervalo entre os índices 7 e 9
+                peakHighlightRange: { start: 7, end: 9 }
             },
             scales: {
                 x: {
@@ -178,13 +205,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inicializa o relógio logo após o carregamento do DOM
+    // Renderizar componentes da interface
+    renderTopFalhas();
     updateClock();
 });
 
 // ==========================================================================
-// 3. LÓGICA DE INTERFACE (RELÓGIO E AUXILIARES)
+// 4. LÓGICA DE INTERFACE E RENDERIZAÇÃO
 // ==========================================================================
+
+/**
+ * Função para renderizar a lista de Top Falhas no HTML
+ */
+function renderTopFalhas() {
+    const containerFalhas = document.querySelector('.top-falhas-list');
+    if (!containerFalhas) return;
+
+    containerFalhas.innerHTML = ''; // Limpa elementos estáticos
+
+    dadosDashboard.topFalhas.forEach(falha => {
+        const classeBadge = falha.impacto.toLowerCase() === 'crítico' ? 'critico' : 'alto';
+        
+        containerFalhas.innerHTML += `
+            <div class="falha-item">
+                <span class="servidor-nome">${falha.servidor}</span>
+                <span class="badge ${classeBadge}">■ ${falha.impacto.toUpperCase()}</span>
+            </div>
+        `;
+    });
+}
 
 /**
  * Função para atualizar o relógio digital no cabeçalho
@@ -200,5 +249,5 @@ function updateClock() {
     clockElement.textContent = `${hours}:${minutes}`;
 }
 
-// Atualiza o relógio a cada 1 segundo (para precisão)
+// Atualiza o relógio a cada 1 segundo
 setInterval(updateClock, 1000);
