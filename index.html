@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONI Intelligence - Corporate NOC Dashboard</title>
+    
+    <!-- Fontes Externas -->
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Elementos de Background -->
+    <div class="bg-watermark-oni"></div>
+
+    <div class="dashboard-container">
+        
+        <!-- CABEÇALHO PRINCIPAL -->
+        <header class="oni-header-clean">
+            <div class="header-watermark">ONI INTELLIGENCE</div>
+
+            <div class="header-brand">
+                <!-- Simbolo Logo (Caminho local sugerido: assets/img/logo-sem-fundo.png) -->
+                <img src="https://i.postimg.cc/1zzyQSWH/logo-sem-fundo.png" alt="ONI Logo" class="brand-symbol-img" />
+
+                <div class="brand-logo-text">
+                    <span class="oni">ONI</span>
+                    <span class="intel">INTELLIGENCE</span>
+                </div>
+                
+                <div class="brand-separator"></div>
+                
+                <div class="brand-tagline">
+                    <div class="tagline-sub">
+                        <div class="sub-title-icon"></div>
+                        PROTEGER PARA CRESCER
+                    </div>
+                    <span class="tagline-main">BACKUP & RESTORE NOC</span>
+                </div>
+            </div>
+
+            <div class="header-center-badge">
+                <div class="badge-core">CORE MONITORING</div>
+            </div>
+
+            <div class="header-info-right">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">SISTEMA ATIVO</span>
+                </div>
+                <div class="clock-text" id="liveClock">--:--</div>
+            </div>
+        </header>
+
+        <div class="content-grid">
+            
+            <!-- COLUNA DA ESQUERDA (MÉTRICAS E GRÁFICOS) -->
+            <div class="left-column">
+                
+                <!-- Cards de Resumo Superior -->
+                <div class="grid-4-col">
+                    <div class="card">
+                        <div class="pill-status ok">NO ALVO</div>
+                        <div class="card-label-top">Jobs Processados</div>
+                        <div class="card-value-max">86.942</div>
+                        <div class="card-subtext-top">Meta diária: 84.000 (<span style="color: var(--status-green);">+3.5%</span>)</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="pill-status ok">ESTÁVEL</div>
+                        <div class="card-label-top">Volume Transacionado</div>
+                        <div class="card-value-max">1.42 <span class="unit-text">PB</span></div>
+                        <div class="card-subtext-top">Taxa média: <span style="color: var(--neon-cyan);">48.2 GB/s</span> em pico</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="pill-status ok">ONLINE</div>
+                        <div class="card-label-top">Instâncias Ativas</div>
+                        <div class="card-value-max">10.842</div>
+                        <div class="card-subtext-top"><span style="color: var(--neon-cyan);">9.810</span> VM | <span style="color: var(--neon-cyan);">1.032</span> Físicos</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="pill-status ok">100% OK</div>
+                        <div class="card-label-top">Imutabilidade S3</div>
+                        <div class="card-value-max">580 <span class="unit-text">TB</span></div>
+                        <div class="card-subtext-top">Lock de retenção: <span style="color: var(--neon-cyan);">90 dias</span></div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Latência -->
+                <div class="noc-chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">LATÊNCIA ICMP · 6 H</div>
+                        <div class="chart-header-stats">MÁX <span>16,4 MS</span> · MÉDIA <span>7,9 MS</span></div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="icmpChart"></canvas>
+                    </div>
+                    <div class="chart-footer-metrics">
+                        <div class="metric-item"><span class="metric-label">ATUAL</span><span class="metric-value oni-cyan">8,1 ms</span></div>
+                        <div class="metric-item"><span class="metric-label">MÍNIMA</span><span class="metric-value">6,0 ms</span></div>
+                        <div class="metric-item"><span class="metric-label">P95</span><span class="metric-value">9,3 ms</span></div>
+                        <div class="metric-item"><span class="metric-label">MÁXIMA</span><span class="metric-value oni-red">16,4 ms</span></div>
+                        <div class="metric-item"><span class="metric-label">PERDA</span><span class="metric-value oni-green">0%</span></div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de WAN -->
+                <div class="noc-chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">TRÁFEGO WAN1 · ÚLTIMAS 6 HORAS</div>
+                        <div class="chart-header-stats">PICO <span>95,7 Mb/s</span> · <span>16 % DA CAPACIDADE</span></div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="wanChart"></canvas>
+                    </div>
+                    <div class="chart-legend-inline">
+                        <div class="legend-group">
+                            <div class="legend-item">
+                                <div class="legend-indicator" style="background-color: var(--status-green);"></div>
+                                <strong style="color: var(--text-main); font-size: 14px;">DOWNLOAD</strong>
+                                <span>atual 33,4 · média 29,8 · máx 95,7 Mb/s</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-indicator" style="border-top: 2px dashed var(--oni-slate-sub); height: 0;"></div>
+                                <strong style="color: var(--text-main); font-size: 14px;">UPLOAD</strong>
+                                <span>atual 8,7 · média 8,2 · máx 22,4 Mb/s</span>
+                            </div>
+                        </div>
+                        <div>escala 0–120 Mb/s · contratada 600 Mb/s</div>
+                    </div>
+                </div>
+
+                <!-- Rodapé da Esquerda (Capacidade e SLA) -->
+                <div class="grid-2-col">
+                    <div class="card">
+                        <div class="pill-status warn">ATENÇÃO</div>
+                        <div class="card-label-top">Capacidade Repositório Principal</div>
+                        <div class="block-bar-container">
+                            <!-- Blocos de progresso -->
+                            <div class="block-segment active"></div><div class="block-segment active"></div>
+                            <div class="block-segment active"></div><div class="block-segment active"></div>
+                            <div class="block-segment active"></div><div class="block-segment active"></div>
+                            <div class="block-segment active"></div><div class="block-segment active"></div>
+                            <div class="block-segment active"></div><div class="block-segment active"></div>
+                            <div class="block-segment active"></div><div class="block-segment inactive"></div>
+                            <div class="block-segment inactive"></div><div class="block-segment inactive"></div>
+                            <div class="block-segment inactive"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 14px; font-family: var(--font-condensed);">
+                            <span style="color: var(--text-sub); font-size: 18px; font-weight: 700;">OCUPADO: <strong style="color: #ffffff; font-size: 20px;">435 TB (75%)</strong></span>
+                            <span style="color: var(--text-sub); font-size: 18px; font-weight: 700;">LIVRE: <strong style="color: #ffffff; font-size: 20px;">145 TB</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-label-top">SLA / Consenso de Execução</div>
+                        <div class="gauge-wrapper">
+                            <div class="gauge-svg-box">
+                                <svg viewBox="0 0 120 70" style="width: 100%; height: 100%; overflow: visible;">
+                                    <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10" stroke-linecap="round"/>
+                                    <path d="M 10 60 A 50 50 0 0 1 100.4 29.3" fill="none" stroke="#FFB300" stroke-width="10" />
+                                    <g transform="translate(60, 60) rotate(72.54)">
+                                        <line x1="0" y1="0" x2="0" y2="-44" stroke="#FFFFFF" stroke-width="3"/>
+                                        <circle cx="0" cy="0" r="5" fill="#FFB300" stroke="#FFFFFF" stroke-width="2"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; font-family: var(--font-condensed);">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: var(--status-yellow); font-size: 15px; font-weight: 800;">● CONCLUÍDOS</span>
+                                    <span style="font-size: 21px; font-weight: 800; color: var(--status-yellow);">90.3%</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: var(--status-red); font-size: 15px; font-weight: 800;">■ FALHAS CRÍTICAS</span>
+                                    <span style="font-size: 21px; font-weight: 800; color: var(--status-red);">6.4%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUNA DA DIREITA (SUREBACKUP E FALHAS) -->
+            <div class="right-column">
+                
+                <!-- Card SureBackup -->
+                <div class="card surebackup-card">
+                    <div class="pill-status ok" style="font-size: 13px; padding: 3px 10px;">100% AUDITADO</div>
+                    <div class="card-label-top" style="font-size: 21px;">SUREBACKUP / RECUPERABILIDADE</div>
+                    <div class="surebackup-body">
+                        <div class="surebackup-ring-box">
+                            <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible;">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3.5" />
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--status-green)" stroke-width="3.5" stroke-dasharray="100, 100" stroke-linecap="round" />
+                            </svg>
+                            <div style="position: absolute; display: flex; flex-direction: column; align-items: center; line-height: 1.1;">
+                                <span style="font-family: var(--font-condensed); font-size: 25px; font-weight: 800; color: #FFFFFF;">24/24</span>
+                                <span style="font-family: var(--font-condensed); font-size: 12px; font-weight: 800; color: var(--status-green);">PASSED</span>
+                            </div>
+                        </div>
+                        <div class="surebackup-metrics-list">
+                            <div class="surebackup-metric-row"><span class="surebackup-metric-label">BOOT DA VM:</span><span class="surebackup-metric-val" style="color: var(--status-green);">✔ PASS</span></div>
+                            <div class="surebackup-metric-row"><span class="surebackup-metric-label">HEARTBEAT OS:</span><span class="surebackup-metric-val" style="color: var(--status-green);">✔ OK</span></div>
+                            <div class="surebackup-metric-row"><span class="surebackup-metric-label">TESTE DE APP:</span><span class="surebackup-metric-val" style="color: var(--status-green);">✔ OK</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card de Top Falhas -->
+                <div class="card exceptions-card">
+                    <div>
+                        <div class="card-label-top" style="font-size: 22px; color: var(--text-main); margin: 0;">TOP FALHAS</div>
+                        <div style="font-size: 12px; color: var(--text-sub); text-transform: uppercase;">Classificação por Gravidade</div>
+                    </div>
+                    <div class="exception-list">
+                        <div class="exception-item"><span class="host-name">SRV-VMS-PROD-02</span><span class="badge-critico">■ CRÍTICO</span></div>
+                        <div class="exception-item"><span class="host-name">SRV-BKP-CORE-01</span><span class="badge-critico">■ CRÍTICO</span></div>
+                        <div class="exception-item"><span class="host-name">SRV-SQL-FIN-03</span><span class="badge-critico">■ CRÍTICO</span></div>
+                        <div class="exception-item"><span class="host-name">SRV-APP-WEB-07</span><span class="badge-alto">▲ ALTO</span></div>
+                        <div class="exception-item"><span class="host-name">SRV-DC-PRIMARY</span><span class="badge-alto">▲ ALTO</span></div>
+                        <div class="exception-item"><span class="host-name">SRV-FS-DOCS-04</span><span class="badge-offline">- OFFLINE</span></div>
+                        <div class="exception-item"><span class="host-name">SRV-VDI-PC-12</span><span class="badge-offline">- OFFLINE</span></div>
+                        <div class="exception-item"><span class="host-name">SRV-MON-ZABBIX</span><span class="badge-offline">- OFFLINE</span></div>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-sub); text-align: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
+                        Exibindo 8 falhas ativas no sistema
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
